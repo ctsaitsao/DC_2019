@@ -3,7 +3,7 @@
 #define BACK 1
 
 Servo servo1;  // create servo object to control a servo
-static const int servoPin = 4;
+static const int servoPin = 15;
 int pos = 45;    // variable to store the servo position
 
 const int PWMRpin = 14;

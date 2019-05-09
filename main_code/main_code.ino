@@ -66,6 +66,7 @@ void loop() {
   }
   if (SerialBT.available()) {
     int Key = SerialBT.read();   // IMPORTANT DO NOT DELETE
+    Serial.println(Key);
     Key = char(Key);   // IMPORTANT DO NOT DELETE
     SerialBT.println(Key);
 
@@ -81,7 +82,6 @@ void loop() {
       }
     }
     else if (Key == 'w') {
-//      Serial.println("W entered");
       ledcWrite(PWMLchannel, 250);
       digitalWrite(DIRLpin, FWD);
       ledcWrite(PWMRchannel, 250);
@@ -92,41 +92,40 @@ void loop() {
       digitalWrite(DIRLpin, BACK);
       ledcWrite(PWMRchannel, 250);
       digitalWrite(DIRRpin, BACK); 
+
+    }
+    else if (Key == 'q') {
+      for(int posDegrees = 120; posDegrees >= 90; posDegrees--) 
+      {
+        servo1.write(posDegrees);
+        Serial.println(posDegrees);
+        delay(5);
+      }
+    }
+    else if (Key == 'e') {
+      for(int posDegrees = 90; posDegrees <= 120; posDegrees++) 
+      {
+        servo1.write(posDegrees);
+        Serial.println(posDegrees);
+        delay(5);
+      }
     }
     else if (Key == 'a'){
-      ledcWrite(PWMLchannel, 250);
+      ledcWrite(PWMLchannel, 170);
       digitalWrite(DIRLpin, BACK);
-      ledcWrite(PWMRchannel, 250);
+      ledcWrite(PWMRchannel, 170);
       digitalWrite(DIRRpin, FWD);
     }
     else if (Key == 'd'){
-      ledcWrite(PWMLchannel, 250);
+      ledcWrite(PWMLchannel, 170);
       digitalWrite(DIRLpin, FWD);
-      ledcWrite(PWMRchannel, 250);
+      ledcWrite(PWMRchannel, 170);
       digitalWrite(DIRRpin, BACK);
     }
 
     else if (Key = 'p') {   // for STOP
       ledcWrite(PWMLchannel, 0);
       ledcWrite(PWMRchannel, 0); 
-    }
-
-    else if (Key = 'i') {
-      for(int posDegrees = 0; posDegrees <= 150; posDegrees++) 
-      {
-        servo1.write(posDegrees);
-        Serial.println(posDegrees);
-        delay(5);
-      }
-    }
-
-    else if (Key = 'o') {
-      for(int posDegrees = 150; posDegrees >= 0; posDegrees--) 
-      {
-        servo1.write(posDegrees);
-        Serial.println(posDegrees);
-        delay(5);
-      }
     }
   }
   delay(20);
