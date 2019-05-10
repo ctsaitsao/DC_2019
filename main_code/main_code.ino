@@ -39,6 +39,11 @@ char message1[50];
 int m1 = 0;
 float xpos1 = 0, ypos1 = 0, xpos2 = 0, ypos2 = 0;
 
+// INITIALIZE LIGHT SENSOR: 
+
+const int light_output_pin = 13;
+const int light_input_pin = 34;  // analog pin A2
+
 
 void setup() {
   Serial.begin(115200); //9600 before, WORKED WITH 115200. Refers to serial communication thru USB when MCU is being programmed
@@ -58,7 +63,7 @@ void setup() {
   digitalWrite(DIRLpin, LOW); // set direction to cw/ccw
 
   // BLUETOOTH:
-  SerialBT.begin("ESP32testJCAH"); //Bluetooth device name
+  SerialBT.begin("ESP32test_main_code"); //Bluetooth device name
 
   // SERVO: 
   servo1.attach(
@@ -71,7 +76,7 @@ void setup() {
   // DIST SENSOR:
   Wire.begin();
   Wire.setClock(400000); // use 400 kHz I2C
-  sensor.setTimeout(500);
+  sensor.setTimeout(1000);
   if (!sensor.init())   // if no sensor
   {
     Serial.println("Failed to detect and initialize sensor!");
@@ -82,12 +87,18 @@ void setup() {
   sensor.startContinuous(50);
 
   // VIVE:
-//  Serial.begin(9600); // for computer
   Serial2.begin(115200,SERIAL_8N1, 16, 17); // for teensy. Tx1 = pin 17, Rx1 = pin 16
+
+  // LIGHT SENSOR:
+  pinMode(light_output_pin,OUTPUT);
+  digitalWrite(light_output_pin,HIGH);
+  pinMode(light_input_pin, INPUT); 
 }
+
 
 void loop() {
   int i;
+  
   if (Serial.available()) {
     SerialBT.write(Serial.read());
   }
@@ -142,7 +153,6 @@ void loop() {
       for(int posDegrees = 120; posDegrees >= 90; posDegrees--) 
       {
         servo1.write(posDegrees);
-//        Serial.println(posDegrees);
         delay(5);
       }
       break;
@@ -151,7 +161,6 @@ void loop() {
       for(int posDegrees = 90; posDegrees <= 120; posDegrees++) 
       {
         servo1.write(posDegrees);
-//        Serial.println(posDegrees);
         delay(5);
       }
       break;
@@ -161,17 +170,35 @@ void loop() {
       ledcWrite(PWMRchannel, 0); 
       break;
       }
+//      case 'p': {
+//      int light = analogRead(light_input_pin);
+//      Serial.print(light);
+//      SerialBT.print("a ");
+//      SerialBT.println(light);
+//      }
     }
   }
+
+  // DIST SENSOR:
   int distance = sensor.read();
+//  int light = analogRead(light_input_pin);
   SerialBT.print("a ");
   SerialBT.println(distance);
+//  SerialBT.print("a ");  
+//  SerialBT.println(light);
   if (sensor.timeoutOccurred()) { Serial.print(" TIMEOUT"); }
-  
+
+  // VIVE:
   checkVive();
   Serial.println(xpos1);
   Serial.println(" ");
   Serial.println(ypos1);
+
+  // LIGHT SENSOR:
+  int light = analogRead(light_input_pin);
+  Serial.print(light);
+  SerialBT.print("b ");
+  SerialBT.println(light);
   
   delay(20);
 }
