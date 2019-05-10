@@ -31,12 +31,12 @@ def update(dt):
             #print(x)
         if(values[0] == 'a'):
             analog = int(values[1])
-    
+
 
 def on_mouse_down(button, pos):
     #print("Mouse button", button, "down at", pos)
     ser.write(b'o')
-    
+
 def on_mouse_up(button, pos):
     #print("Mouse button", button, "up at", pos)
     ser.write(b'p')
@@ -54,7 +54,7 @@ def on_key_down(key): #key names are saved in CAPS
 #     if key.name == 'S':
 #         ser.write(b's')
 #     if key.name == 'A':
-#         ser.write(b'a')        
+#         ser.write(b'a')
 #     if key.name == 'D':
 #         ser.write(b'd')
 #     if key.name == 'P':
@@ -64,4 +64,4 @@ def on_key_down(key): #key names are saved in CAPS
 #     if key.name == 'I':
 #         ser.write(b'i')
 
-ser = serial.Serial('COM8',9600)
+ser = serial.Serial('COM4',9600)

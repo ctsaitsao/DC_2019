@@ -10,7 +10,7 @@ VL53L1X sensor;
 
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(115200);  
 
   //MAKE SURE IN SERIAL MONITOR WE ARE IN USING THE SAME BAUD RATE!!!!!!!
   //Just in case: 3.3V goes into VDD and not VIN
@@ -18,7 +18,7 @@ void setup()
   Wire.setClock(400000); // use 400 kHz I2C
 
   sensor.setTimeout(500);
-  if (!sensor.init())
+  if (!sensor.init())   // if no sensor
   {
     Serial.println("Failed to detect and initialize sensor!");
     while (1);
@@ -29,19 +29,19 @@ void setup()
   // the minimum timing budget is 20 ms for short distance mode and 33 ms for
   // medium and long distance modes. See the VL53L1X datasheet for more
   // information on range and timing limits.
+  
   sensor.setDistanceMode(VL53L1X::Long);
   sensor.setMeasurementTimingBudget(50000);
 
   // Start continuous readings at a rate of one measurement every 50 ms (the
   // inter-measurement period). This period should be at least as long as the
   // timing budget.
+  
   sensor.startContinuous(50);
 }
 
 void loop()
 {
-  Serial.print(sensor.read());
+  int distance = Serial.println(sensor.read());
   if (sensor.timeoutOccurred()) { Serial.print(" TIMEOUT"); }
-
-  Serial.println();
 }

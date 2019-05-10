@@ -2,6 +2,8 @@
 #include <Servo.h>
 #include <stdio.h>
 #include <math.h>
+#include <Wire.h>
+#include <VL53L1X.h>
 
 BluetoothSerial SerialBT;
 
@@ -10,7 +12,7 @@ BluetoothSerial SerialBT;
 
 int count = 0;
 
-//INITIALIZE WHEEL CHANNELS
+//INITIALIZE WHEEL CHANNELS:
 
 const int PWMRpin = 14;
 const int DIRRpin = 32;
@@ -18,18 +20,28 @@ const int DIRRpin = 32;
 const int PWMLpin = 27;
 const int DIRLpin = 33;
 
-
 static const int PWMRchannel = 2;
 static const int PWMLchannel = 3;
 
-// INITIALIZE SERVO
+// INITIALIZE DIST SENSOR:
+
+VL53L1X sensor;
+
+// INITIALIZE SERVO:
 
 Servo servo1;  // create servo object to control a servo
 static const int servoPin = 15;
 int pos = 45;    // variable to store the servo position
 
+// INITIALIZE VIVE:
+
+char message1[50];
+int m1 = 0;
+float xpos1 = 0, ypos1 = 0, xpos2 = 0, ypos2 = 0;
+
+
 void setup() {
-  Serial.begin(115200); //9600 before, WORKED WITH ONLY 115200
+  Serial.begin(115200); //9600 before, WORKED WITH 115200. Refers to serial communication thru USB when MCU is being programmed
   
   // Initialise PWM for wheel motors
   ledcSetup(PWMRchannel,9600,8); // pwm channel, frequency, resolution in bits
@@ -46,8 +58,7 @@ void setup() {
   digitalWrite(DIRLpin, LOW); // set direction to cw/ccw
 
   // BLUETOOTH:
-//  Serial.begin(115200);
-  SerialBT.begin("ESP32testJCAT"); //Bluetooth device name
+  SerialBT.begin("ESP32testJCAH"); //Bluetooth device name
 
   // SERVO: 
   servo1.attach(
@@ -57,6 +68,22 @@ void setup() {
       120
   );
 
+  // DIST SENSOR:
+  Wire.begin();
+  Wire.setClock(400000); // use 400 kHz I2C
+  sensor.setTimeout(500);
+  if (!sensor.init())   // if no sensor
+  {
+    Serial.println("Failed to detect and initialize sensor!");
+    while (1);
+  }
+  sensor.setDistanceMode(VL53L1X::Long);
+  sensor.setMeasurementTimingBudget(50000);
+  sensor.startContinuous(50);
+
+  // VIVE:
+//  Serial.begin(9600); // for computer
+  Serial2.begin(115200,SERIAL_8N1, 16, 17); // for teensy. Tx1 = pin 17, Rx1 = pin 16
 }
 
 void loop() {
@@ -72,7 +99,8 @@ void loop() {
 
     
     //cases for the movement of the robot, will follow gaming direction (WASD)
-    if (Key == 'x'){   // sine wave plotter for debugging
+    switch (Key) {
+      case 'x': { // sine wave plotter for debugging
       count = count + 1;
       for (i=0; i<100; i++){
         SerialBT.print("x ");
@@ -80,53 +108,98 @@ void loop() {
         SerialBT.print(" ");
         SerialBT.println(int(50*sin(2*3.14/50*i+count)));
       }
-    }
-    else if (Key == 'w') {
+      break;
+      }
+      case 'w': {
       ledcWrite(PWMLchannel, 250);
       digitalWrite(DIRLpin, FWD);
       ledcWrite(PWMRchannel, 250);
       digitalWrite(DIRRpin, FWD);  
-    }
-    else if (Key == 's'){
-      ledcWrite(PWMLchannel, 250);
+      break;
+      }
+      case 's': {
+      ledcWrite(PWMLchannel, 140);
       digitalWrite(DIRLpin, BACK);
-      ledcWrite(PWMRchannel, 250);
+      ledcWrite(PWMRchannel, 140);
       digitalWrite(DIRRpin, BACK); 
-
-    }
-    else if (Key == 'q') {
-      for(int posDegrees = 120; posDegrees >= 90; posDegrees--) 
-      {
-        servo1.write(posDegrees);
-        Serial.println(posDegrees);
-        delay(5);
+      break;
       }
-    }
-    else if (Key == 'e') {
-      for(int posDegrees = 90; posDegrees <= 120; posDegrees++) 
-      {
-        servo1.write(posDegrees);
-        Serial.println(posDegrees);
-        delay(5);
-      }
-    }
-    else if (Key == 'a'){
+      case 'a': {
       ledcWrite(PWMLchannel, 170);
       digitalWrite(DIRLpin, BACK);
       ledcWrite(PWMRchannel, 170);
       digitalWrite(DIRRpin, FWD);
-    }
-    else if (Key == 'd'){
+      break;
+      }
+      case 'd': {
       ledcWrite(PWMLchannel, 170);
       digitalWrite(DIRLpin, FWD);
       ledcWrite(PWMRchannel, 170);
       digitalWrite(DIRRpin, BACK);
-    }
-
-    else if (Key = 'p') {   // for STOP
+      break;
+      }
+      case 'q': {
+      for(int posDegrees = 120; posDegrees >= 90; posDegrees--) 
+      {
+        servo1.write(posDegrees);
+//        Serial.println(posDegrees);
+        delay(5);
+      }
+      break;
+      }
+      case 'e': {
+      for(int posDegrees = 90; posDegrees <= 120; posDegrees++) 
+      {
+        servo1.write(posDegrees);
+//        Serial.println(posDegrees);
+        delay(5);
+      }
+      break;
+      }
+      case 'p': {// for STOP
       ledcWrite(PWMLchannel, 0);
       ledcWrite(PWMRchannel, 0); 
+      break;
+      }
     }
   }
+  int distance = sensor.read();
+  SerialBT.print("a ");
+  SerialBT.println(distance);
+  if (sensor.timeoutOccurred()) { Serial.print(" TIMEOUT"); }
+  
+  checkVive();
+  Serial.println(xpos1);
+  Serial.println(" ");
+  Serial.println(ypos1);
+  
   delay(20);
+}
+
+void checkVive(){
+  char type = ' ';
+  float val1 = 0, val2 = 0;
+  
+  while(Serial2.available()){
+    message1[m1] = Serial2.read();
+    if (message1[m1] == '\n'){
+      sscanf(message1,"%c %f %f", &type, &val1, &val2);
+      if (type == 'a'){
+        xpos1 = val1;
+        ypos1 = val2;
+      }
+      else if (type == 'b'){
+        xpos2 = val1;
+        ypos2 = val2;
+      }
+      m1 = 0;
+      int iii;
+      for(iii=0;iii<50;iii++){
+        message1[iii] = 0;
+      }
+    }
+    else {
+      m1++;
+    }
+  }
 }
