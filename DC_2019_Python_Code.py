@@ -18,8 +18,6 @@ BOX3 = Rect((100, 350), (150, 150))
 BOX4 = Rect((350, 350), (150, 150))
 nick = Actor('nick.png')
 nick.pos = 100, 56
-x_pos, y_pos = nick.pos
-vector = nick.topleft
 ###
 
 def draw():   # In Pygame Zero, there's no main() and no functions called. It automatically calls draw() and update() 30 times a second
@@ -55,9 +53,9 @@ def update(dt):  # called first
         if(values[0] == 'b'):
             light = int(values[1])
 #             print(light)
-    ### Update nick's position
-    # nick.x =
-    # nick.y =
+#      Update nick's position
+#     nick.x =
+#     nick.y =
     if nick.left > WIDTH:
         nick.right = 0
     if nick.right < 0:
@@ -66,7 +64,7 @@ def update(dt):  # called first
         nick.bottom = 0
     if nick.bottom < 0:
         nick.top = HEIGHT
-    ###
+
     if keyboard.left:
         nick.x -= 3
     elif keyboard.right:
@@ -78,8 +76,8 @@ def update(dt):  # called first
 
 def on_mouse_down(button, pos):
     #print("Mouse button", button, "down at", pos)
-    nick.x = pos[0]
-    nick.y = pos[1]
+#     nick.x = pos[0]
+#     nick.y = pos[1]
     ser.write(b'n') # robot moves forward when mouse is clicked
 
 def on_mouse_up(button, pos):
