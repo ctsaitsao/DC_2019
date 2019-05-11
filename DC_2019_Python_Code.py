@@ -59,7 +59,7 @@ def draw():   # In Pygame Zero, there's no main() and no functions called. It au
     screen.draw.text(str(xpos1), (20, 550), color="cyan", fontsize=40)
     screen.draw.text(str(ypos1), (100, 550), color="blue", fontsize=40)
     if (pressed == 1):
-        screen.draw.text("yes (nice)", (450, 550), color="black", fontsize=40)
+        screen.draw.text("yes (noice)", (450, 550), color="black", fontsize=40)
     elif (pressed == 0):
         screen.draw.text("no :(", (450, 550), color="black", fontsize=40)
     screen.draw.text("distance:", (450, 0), color="pink", fontsize=40) # top left to bottom right, ypos is inverted
@@ -71,6 +71,8 @@ def draw():   # In Pygame Zero, there's no main() and no functions called. It au
     screen.draw.filled_rect(BOX2, PURPLE)
     screen.draw.filled_rect(BOX3, PURPLE)
     screen.draw.filled_rect(BOX4, PURPLE)
+
+    screen.draw.filled_rect(Rect((0, 600), (600, 100)), PURPLE)
     ###
     bot.draw()
     nick.draw()
@@ -80,7 +82,7 @@ def draw():   # In Pygame Zero, there's no main() and no functions called. It au
     juan.draw()
     chris.draw()
     tiger.draw()
-    bot.pos = xpos1*25, ypos1*25
+
 
 def plot(data,xpos,ypos,r,g,b):
     ypos = HEIGHT - ypos # flip the y axis
@@ -89,6 +91,10 @@ def plot(data,xpos,ypos,r,g,b):
 
 def update(dt):  # called first
     global c, HEIGHT, x, distance, light, xpos1, ypos1, pressed
+    ### CALIBRATION CURVE FOR VIVE SENSOR
+    bot.pos = xpos1*25, ypos1*25
+
+    ###
     c = (c + 1) % 256   # it would get to 255 and go back to 0
     while ser.in_waiting:  # ser. from serial library, =serial.available()
         line = ser.read_until().strip() #strip() removes the \r\n
@@ -111,16 +117,16 @@ def update(dt):  # called first
 
 #             print(light)
 #      Update bot's position
-#     bot.x =
+   #  bot.x =
 #     bot.y =
-    # if bot.left > WIDTH:
-#         bot.right = 0
-#     if bot.right < 0:
-#         bot.left = WIDTH
-#     if bot.top > HEIGHT:
-#         bot.bottom = 0
-#     if bot.bottom < 0:
-#         bot.top = HEIGHT
+    if bot.left > WIDTH:
+        bot.right = 0
+    if bot.right < 0:
+        bot.left = WIDTH
+    if bot.top > HEIGHT:
+        bot.bottom = 0
+    if bot.bottom < 0:
+        bot.top = HEIGHT
 
 #     if keyboard.left:
 #         bot.x -= 3
@@ -147,8 +153,8 @@ def on_mouse_down(button, pos):
         bot.image = lynch_
     elif peshkin.collidepoint(pos):
         bot.image = peshkin_
-    else:
-        ser.write(b'w') # robot moves forward when mouse is clicked
+#     else:
+#         ser.write(b'w') # robot moves forward when mouse is clicked
 
 def on_mouse_up(button, pos):
     #print("Mouse button", button, "up at", pos)
@@ -171,11 +177,13 @@ def on_key_down(key): #key names are saved in CAPS
         ser.write(b'd')
     if key.name == 'P':
         ser.write(b'p')
-    if key.name == 'Q':
-        ser.write(b'q')
+    if key.name == 'Z':
+        ser.write(b'z')
+    if key.name == 'T':
+        ser.write(b't')
         sounds.release.play()
-    if key.name == 'E':
-        ser.write(b'e')
+    if key.name == 'G':
+        ser.write(b'g')
         sounds.strike.play()
     if key.name == 'N':
         ser.write(b'n')

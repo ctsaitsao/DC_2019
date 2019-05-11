@@ -172,7 +172,7 @@ void loop() {
         digitalWrite(DIRRpin, BACK);
         break;
       }
-      case 'q': {
+      case 't': {
         for(int posDegrees = 120; posDegrees >= 100; posDegrees--) 
         {
           servo1.write(posDegrees);
@@ -180,7 +180,7 @@ void loop() {
         }
         break;
       }
-      case 'e': {
+      case 'g': {
         for(int posDegrees = 100; posDegrees <= 120; posDegrees++) 
         {
           servo1.write(posDegrees);
@@ -194,6 +194,22 @@ void loop() {
         isitmoving = 0;
         break;
       }
+
+      case 'z': {
+          isitmoving = 1;
+          digitalWrite(DIRLpin, FWD);
+          digitalWrite(DIRRpin, FWD);  
+          int dutycycle=0;
+          for (dutycycle=0; dutycycle<130; dutycycle+=5) {
+            ledcWrite(PWMLchannel, dutycycle);
+            ledcWrite(PWMRchannel, dutycycle);
+            delay(20);
+          }
+          isitmoving = 0;
+        break;
+      }
+
+      
       case 'n': // for mouse, original no-increment forward code
         ledcWrite(PWMLchannel, 250);
         digitalWrite(DIRLpin, FWD);
@@ -215,9 +231,9 @@ void loop() {
 //  Serial.println(" ");
 //  Serial.println(ypos1);
   SerialBT.print("c ");
-  SerialBT.println(xpos1);
+  SerialBT.println((xpos1+xpos2)/2);
   SerialBT.print("d ");
-  SerialBT.println(ypos1);
+  SerialBT.println((ypos1+ypos2)/2);
 
 
   // pressed pin: 
