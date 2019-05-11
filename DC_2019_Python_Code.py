@@ -28,17 +28,17 @@ def draw():   # In Pygame Zero, there's no main() and no functions called. It au
     screen.fill((255, 255, 255))  # RGB
     plot(x,10,HEIGHT/2,0,0,255) # data, xpos, ypos, red, green, blue
     screen.draw.text(str(distance), (500, 50), color="orange", fontsize=40) # top left to bottom right, ypos is inverted
-    screen.draw.text(str(light), (20, 50), color="orange", fontsize=40)
-    screen.draw.text(str(xpos1), (20, 550), color="orange", fontsize=40)
-    screen.draw.text(str(ypos1), (100, 550), color="orange", fontsize=40)
+    screen.draw.text(str(light), (20, 50), color="red", fontsize=40)
+    screen.draw.text(str(xpos1), (20, 550), color="cyan", fontsize=40)
+    screen.draw.text(str(ypos1), (100, 550), color="blue", fontsize=40)
     if (pressed == 1):
-        screen.draw.text("yes (nice)", (450, 550), color="orange", fontsize=40)
+        screen.draw.text("yes (nice)", (450, 550), color="black", fontsize=40)
     elif (pressed == 0):
-        screen.draw.text("no :(", (450, 550), color="orange", fontsize=40)
-    screen.draw.text("distance:", (450, 0), color="orange", fontsize=40) # top left to bottom right, ypos is inverted
-    screen.draw.text("light proximity:", (0, 0), color="orange", fontsize=40)
-    screen.draw.text("x , y:", (20, 520), color="orange", fontsize=40)
-    screen.draw.text("pressed?", (400, 520), color="orange", fontsize=40)
+        screen.draw.text("no :(", (450, 550), color="black", fontsize=40)
+    screen.draw.text("distance:", (450, 0), color="pink", fontsize=40) # top left to bottom right, ypos is inverted
+    screen.draw.text("light proximity:", (0, 0), color="green", fontsize=40)
+    screen.draw.text("x , y:", (20, 520), color="brown", fontsize=40)
+    screen.draw.text("pressed?", (400, 520), color="magenta", fontsize=40)
     ### Draw arena
     screen.draw.filled_rect(BOX1, PURPLE)
     screen.draw.filled_rect(BOX2, PURPLE)
