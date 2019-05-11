@@ -50,6 +50,10 @@ chris.pos = 460, Y2
 tiger.pos = 540, Y2
 ###
 
+# POSITION CALIBRATION CONSTANTS
+bx = [2.978754801577001e+02;-1.648988881665044;-93.660466396540240;-6.816351604487213];
+by = [-4.420875473234094e+02;1.471986752577587e+02;-1.675776772422335;0.568207165480135];
+
 
 def draw():   # In Pygame Zero, there's no main() and no functions called. It automatically calls draw() and update() 30 times a second
     screen.fill((255, 255, 255))  # RGB
@@ -92,8 +96,7 @@ def plot(data,xpos,ypos,r,g,b):
 def update(dt):  # called first
     global c, HEIGHT, x, distance, light, xpos1, ypos1, pressed
     ### CALIBRATION CURVE FOR VIVE SENSOR
-    bot.pos = xpos1*25, ypos1*25
-
+    bot_position_update()
     ###
     c = (c + 1) % 256   # it would get to 255 and go back to 0
     while ser.in_waiting:  # ser. from serial library, =serial.available()
@@ -113,7 +116,6 @@ def update(dt):  # called first
              ypos1 = float(values[1])
         if(values[0] == 'e'):
              pressed = int(values[1])
-
 
 #             print(light)
 #      Update bot's position
@@ -136,6 +138,11 @@ def update(dt):  # called first
 #         bot.y -= 3
 #     elif keyboard.down:
 #         bot.y += 3
+
+
+def bot_position_update():
+    bot.x = bx[1] + bx[2]*xpos1 + bx[3]*ypos1 + bx[4]*xpos1.*ypos1;
+    bot.y = by[1] + by[2]*xpos1 + by[3]*ypos1 + by[4]*xpos1.*ypos1;
 
 def on_mouse_down(button, pos):
     print("Mouse button", button, "down at", pos)
