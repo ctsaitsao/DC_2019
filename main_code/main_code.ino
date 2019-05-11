@@ -11,6 +11,8 @@ BluetoothSerial SerialBT;
 #define BACK 0
 
 int count = 0;
+int local_d = 0;
+int local_a = 0;
 
 //INITIALIZE DRIVE VARIABLES:
 
@@ -51,6 +53,12 @@ float xpos1 = 0, ypos1 = 0, xpos2 = 0, ypos2 = 0;
 const int light_output_pin = 13;
 const int light_input_pin = 34;  // analog pin A2
 
+// INITIALIZE EDGE DISTANCE SENSOR
+
+int trigPin = 36;    // Trigger
+int echoPin = 39;    // Echo
+float duration, cm, inches;
+
 
 void setup() {
   Serial.begin(115200); //9600 before, WORKED WITH 115200. Refers to serial communication thru USB when MCU is being programmed
@@ -72,6 +80,8 @@ void setup() {
   digitalWrite(DIRRpin, LOW); // set direction to cw/ccw
   ledcWrite(PWMLchannel,0); // pwm channel, speed 0-255
   digitalWrite(DIRLpin, LOW); // set direction to cw/ccw
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
 
   // BLUETOOTH:
   SerialBT.begin("ESP32test_main_code"); //Bluetooth device name
@@ -134,6 +144,8 @@ void loop() {
       }
       
       case 'w': {
+        local_d = 0;
+        local_a = 0;
         if (isitmoving== 1 && digitalRead(right_read) == FWD && digitalRead(left_read) == FWD) {;}
         else {
           isitmoving = 1;
@@ -149,6 +161,8 @@ void loop() {
         break;
       }
       case 's': {
+        local_d = 0;
+        local_a = 0;
         isitmoving = 1;
         ledcWrite(PWMLchannel, 140);
         digitalWrite(DIRLpin, BACK);
@@ -157,22 +171,53 @@ void loop() {
         break;
       }
       case 'a': {
+        local_d = 0;
         isitmoving = 1;
-        ledcWrite(PWMLchannel, 170);
+        if (local_a == 0) { 
+        local_a = 1;
+        ledcWrite(PWMLchannel, 140);
         digitalWrite(DIRLpin, BACK);
-        ledcWrite(PWMRchannel, 170);
+        ledcWrite(PWMRchannel, 140);
         digitalWrite(DIRRpin, FWD);
         break;
+        }
+        
+        else if (local_a == 1) {
+        ledcWrite(PWMLchannel, 230);
+        digitalWrite(DIRLpin, BACK);
+        ledcWrite(PWMRchannel, 230);
+        digitalWrite(DIRRpin, FWD);
+        break;
+        }
       }
+
+      
       case 'd': {
+        local_a = 0;
         isitmoving = 1;
-        ledcWrite(PWMLchannel, 170);
+        if (local_d == 0) {
+        local_d = 1;
+        ledcWrite(PWMLchannel, 140);
         digitalWrite(DIRLpin, FWD);
-        ledcWrite(PWMRchannel, 170);
+        ledcWrite(PWMRchannel, 140);
         digitalWrite(DIRRpin, BACK);
         break;
+        }
+
+        else if (local_d == 1) {
+          local_d = 0;
+          ledcWrite(PWMLchannel, 230);
+          digitalWrite(DIRLpin, FWD);
+          ledcWrite(PWMRchannel, 230);
+          digitalWrite(DIRRpin, BACK);
+          break;
+        }
+        
+        
       }
       case 't': {
+        local_a = 0;
+        local_d = 0;
         for(int posDegrees = 120; posDegrees >= 100; posDegrees--) 
         {
           servo1.write(posDegrees);
@@ -181,6 +226,8 @@ void loop() {
         break;
       }
       case 'g': {
+        local_a = 0;
+        local_d = 0;
         for(int posDegrees = 100; posDegrees <= 120; posDegrees++) 
         {
           servo1.write(posDegrees);
@@ -189,6 +236,8 @@ void loop() {
         break;
       }
       case 'p': {// for STOP
+        local_a = 0;
+        local_d = 0;
         ledcWrite(PWMLchannel, 0);
         ledcWrite(PWMRchannel, 0); 
         isitmoving = 0;
@@ -196,6 +245,8 @@ void loop() {
       }
 
       case 'z': {
+          local_a = 0;
+           local_d = 0;
           isitmoving = 1;
           digitalWrite(DIRLpin, FWD);
           digitalWrite(DIRRpin, FWD);  
@@ -211,6 +262,9 @@ void loop() {
 
       
       case 'n': // for mouse, original no-increment forward code
+        isitmoving = 1;
+        local_a = 0;
+        local_d = 0;
         ledcWrite(PWMLchannel, 250);
         digitalWrite(DIRLpin, FWD);
         ledcWrite(PWMRchannel, 250);
@@ -246,6 +300,28 @@ void loop() {
   int light = analogRead(light_input_pin)-1000;
   SerialBT.print("b ");
   SerialBT.println(light);
+
+
+
+  // EDGE DISTANCE SENSOR:
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(5);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  pinMode(echoPin, INPUT);
+  duration = pulseIn(echoPin, HIGH);
+
+  pinMode(echoPin, INPUT);
+  duration = pulseIn(echoPin, HIGH);
+
+
+  cm = (duration/2) / 29.1;     // Divide by 29.1 or multiply by 0.0343
+  inches = (duration/2) / 74;   // Divide by 74 or multiply by 0.0135
+
+    SerialBT.print("f ");
+    SerialBT.println(inches);
   
   delay(20);
 }

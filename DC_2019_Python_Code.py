@@ -1,7 +1,8 @@
 import serial
 import string
+import time
 
-WIDTH = 600    # 6 feet
+WIDTH = 820    # 6 feet
 HEIGHT = 700
 TITLE = "TOTEM!"
 c = 0  # color, initial value
@@ -11,6 +12,7 @@ light = 0
 xpos1 = 0
 ypos1 = 0
 pressed = 0
+edge_distance = 0
 ser = serial.Serial('COM5',9600)
 
 ### Initialise arena
@@ -51,32 +53,36 @@ tiger.pos = 540, Y2
 ###
 
 # POSITION CALIBRATION CONSTANTS
-bx = [2.978754801577001e+02;-1.648988881665044;-93.660466396540240;-6.816351604487213];
-by = [-4.420875473234094e+02;1.471986752577587e+02;-1.675776772422335;0.568207165480135];
+bx = [2.978754801577001e+02,-1.648988881665044,-93.660466396540240,-6.816351604487213]
+by = [-4.420875473234094e+02,1.471986752577587e+02,-1.675776772422335,0.568207165480135]
 
+tt = time.time()
 
 def draw():   # In Pygame Zero, there's no main() and no functions called. It automatically calls draw() and update() 30 times a second
     screen.fill((255, 255, 255))  # RGB
-    plot(x,10,HEIGHT/2,0,0,255) # data, xpos, ypos, red, green, blue
-    screen.draw.text(str(distance), (500, 50), color="orange", fontsize=40) # top left to bottom right, ypos is inverted
-    screen.draw.text(str(light), (20, 50), color="red", fontsize=40)
-    screen.draw.text(str(xpos1), (20, 550), color="cyan", fontsize=40)
-    screen.draw.text(str(ypos1), (100, 550), color="blue", fontsize=40)
-    if (pressed == 1):
-        screen.draw.text("yes (noice)", (450, 550), color="black", fontsize=40)
-    elif (pressed == 0):
-        screen.draw.text("no :(", (450, 550), color="black", fontsize=40)
-    screen.draw.text("distance:", (450, 0), color="pink", fontsize=40) # top left to bottom right, ypos is inverted
-    screen.draw.text("light proximity:", (0, 0), color="green", fontsize=40)
-    screen.draw.text("x , y:", (20, 520), color="brown", fontsize=40)
-    screen.draw.text("pressed?", (400, 520), color="magenta", fontsize=40)
     ### Draw arena
     screen.draw.filled_rect(BOX1, PURPLE)
     screen.draw.filled_rect(BOX2, PURPLE)
     screen.draw.filled_rect(BOX3, PURPLE)
     screen.draw.filled_rect(BOX4, PURPLE)
-
     screen.draw.filled_rect(Rect((0, 600), (600, 100)), PURPLE)
+    screen.draw.filled_rect(Rect((600, 0), (250, HEIGHT)), PURPLE)
+    ### print values
+#     screen.draw.text(str(distance), (610, 50), color="orange", fontsize=40) # top left to bottom right, ypos is inverted
+#     screen.draw.text(str(light), (610, 150), color="green", fontsize=40)
+#     screen.draw.text(str(xpos1), (610, 250), color="cyan", fontsize=40)
+#     screen.draw.text(str(ypos1), (700, 250), color="cyan", fontsize=40)
+#     screen.draw.text(str(edge_distance), (610, 350), color="red", fontsize=40)
+#     if (pressed == 1):
+#         screen.draw.text("yes (noice)", (610, 450), color="magenta", fontsize=40)
+#     elif (pressed == 0):
+#         screen.draw.text("no :(", (610, 450), color="magenta", fontsize=40)
+#     screen.draw.text("distance:", (610, 10), color="pink", fontsize=40) # top left to bottom right, ypos is inverted
+#     screen.draw.text("light proximity:", (610, 100), color="green", fontsize=40)
+#     screen.draw.text("x , y:", (610, 200), color="cyan", fontsize=40)
+#     screen.draw.text("pressed?", (610, 400), color="magenta", fontsize=40)
+#     screen.draw.text("edge distance", (610, 300), color="red", fontsize=40)
+
     ###
     bot.draw()
     nick.draw()
@@ -86,6 +92,7 @@ def draw():   # In Pygame Zero, there's no main() and no functions called. It au
     juan.draw()
     chris.draw()
     tiger.draw()
+#     print(time.time() - tt)
 
 
 def plot(data,xpos,ypos,r,g,b):
@@ -94,11 +101,11 @@ def plot(data,xpos,ypos,r,g,b):
         screen.draw.line((xpos+i,ypos),(xpos+i,ypos-x[i]),(r,g,b))
 
 def update(dt):  # called first
-    global c, HEIGHT, x, distance, light, xpos1, ypos1, pressed
+    global HEIGHT, x, distance, light, xpos1, ypos1, pressed, edge_distance, tt
+#     tt = time.time()
     ### CALIBRATION CURVE FOR VIVE SENSOR
     bot_position_update()
     ###
-    c = (c + 1) % 256   # it would get to 255 and go back to 0
     while ser.in_waiting:  # ser. from serial library, =serial.available()
         line = ser.read_until().strip() #strip() removes the \r\n
         values = line.decode('ascii').split(' ')
@@ -116,11 +123,9 @@ def update(dt):  # called first
              ypos1 = float(values[1])
         if(values[0] == 'e'):
              pressed = int(values[1])
+        if(values[0] == 'f'):
+             edge_distance = float(values[1])
 
-#             print(light)
-#      Update bot's position
-   #  bot.x =
-#     bot.y =
     if bot.left > WIDTH:
         bot.right = 0
     if bot.right < 0:
@@ -141,8 +146,8 @@ def update(dt):  # called first
 
 
 def bot_position_update():
-    bot.x = bx[1] + bx[2]*xpos1 + bx[3]*ypos1 + bx[4]*xpos1.*ypos1;
-    bot.y = by[1] + by[2]*xpos1 + by[3]*ypos1 + by[4]*xpos1.*ypos1;
+    bot.x = bx[0] + bx[1]*xpos1 + bx[2]*ypos1 + bx[3]*xpos1*ypos1
+    bot.y = 600 - (by[0] + by[1]*xpos1 + by[2]*ypos1 + by[3]*xpos1*ypos1)
 
 def on_mouse_down(button, pos):
     print("Mouse button", button, "down at", pos)
