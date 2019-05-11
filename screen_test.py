@@ -62,6 +62,8 @@ def update(dt):  # called first
 # #             print(light)
 
     ### Update nick's position
+    nick.angle += 1
+
     # nick.x =
     # nick.y =
     if nick.left > WIDTH:
