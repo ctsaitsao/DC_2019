@@ -28,6 +28,8 @@ const int left_read = 4;
 static const int PWMRchannel = 2;
 static const int PWMLchannel = 3;
 
+int const pressed_pin = 26;
+
 // INITIALIZE DIST SENSOR:
 
 VL53L1X sensor;
@@ -62,8 +64,9 @@ void setup() {
   pinMode(DIRRpin,OUTPUT); // set direction pin to output
   pinMode(DIRLpin,OUTPUT); // set direction pin to output
 
-   pinMode(right_read,INPUT); // set direction pin to output
-   pinMode(left_read,INPUT); // set direction pin to output
+   pinMode(right_read,INPUT); // set direction pin to input
+   pinMode(left_read,INPUT); // set direction pin to input
+   pinMode(pressed_pin,OUTPUT); // set pin to input, which will tell us whether the button has been pressed or not
 
   ledcWrite(PWMRchannel,0); // pwm channel, speed 0-255
   digitalWrite(DIRRpin, LOW); // set direction to cw/ccw
@@ -95,7 +98,7 @@ void setup() {
   sensor.startContinuous(50);
 
   // VIVE:
-  Serial2.begin(115200,SERIAL_8N1, 16, 17); // for teensy. Tx1 = pin 17, Rx1 = pin 16
+  Serial2.begin(9600,SERIAL_8N1, 16, 17); // for teensy. Tx1 = pin 17, Rx1 = pin 16
 
   // LIGHT SENSOR:
   pinMode(light_output_pin,OUTPUT);
@@ -208,12 +211,23 @@ void loop() {
 
   // VIVE:
   checkVive();
-  Serial.println(xpos1);
-  Serial.println(" ");
-  Serial.println(ypos1);
+//  Serial.println(xpos1);
+//  Serial.println(" ");
+//  Serial.println(ypos1);
+  SerialBT.print("c ");
+  SerialBT.println(xpos1);
+  SerialBT.print("d ");
+  SerialBT.println(ypos1);
+
+
+  // pressed pin: 
+  int pressed = digitalRead(pressed_pin);
+//  Serial.println(pressed);
+   SerialBT.print("e ");
+   SerialBT.println(pressed);
 
   // LIGHT SENSOR:
-  int light = analogRead(light_input_pin)-2500;
+  int light = analogRead(light_input_pin)-1000;
   SerialBT.print("b ");
   SerialBT.println(light);
   
