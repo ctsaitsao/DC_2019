@@ -45,7 +45,7 @@ aleAV.pos = 90, Y2
 juanAV.pos = 230, Y2 - 10
 chrisAV.pos = 380, Y2
 tigerAV.pos = 510, Y2
-character_selected = True
+character_selected = False
 ###
 
 def draw():
@@ -70,6 +70,23 @@ def draw():
         juanAV.draw()
         chrisAV.draw()
         tigerAV.draw()
+    else:
+        screen.fill((0, 0, c))  # RGB
+
+        ### Draw arena
+        screen.draw.filled_rect(BOX1, PURPLE)
+        screen.draw.filled_rect(BOX2, PURPLE)
+        screen.draw.filled_rect(BOX3, PURPLE)
+        screen.draw.filled_rect(BOX4, PURPLE)
+        bot.draw()
+        ###
+
+        plot(x,10,HEIGHT/2,0,0,255) # data, xpos, ypos, red, green, blue
+        plot(x,10,HEIGHT/2,0,0,255) # data, xpos, ypos, red, green, blue
+
+        screen.draw.text(str(distance), (360, 20), color="orange", fontsize=60) # top left to bottom right, ypos is inverted
+        screen.draw.text(str(light), (0, 20), color="orange", fontsize=60)
+
 
     ###
 
@@ -77,7 +94,9 @@ def draw():
 #     print("Mouse button", button, "down at", pos)
 
 def on_mouse_down(pos):
-    if not character_selected:
-        if aleAV.collidepoint(pos):
-            bot = ale
-            screen.clear()
+    screen.clear()
+    character_selected = True
+
+    if aleAV.collidepoint(pos):
+        bot = ale
+        screen.clear()
