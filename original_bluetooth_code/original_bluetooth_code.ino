@@ -9,7 +9,7 @@ int count = 0;
 
 void setup() {
   Serial.begin(115200);
-  SerialBT.begin("ESP32test_original_bluetooth"); //Bluetooth device name
+  SerialBT.begin("ESP32test_original_bluetooth2"); //Bluetooth device name
   //Serial.println("The device started, now you can pair it with bluetooth!");
   pinMode(13,OUTPUT);
   digitalWrite(13,LOW);

@@ -13,7 +13,7 @@ xpos1 = 0
 ypos1 = 0
 pressed = 0
 edge_distance = 0
-ser = serial.Serial('COM5',9600)
+ser = serial.Serial('COM4',9600)
 
 ### Initialise arena
 PURPLE = 138,43,226
@@ -66,22 +66,22 @@ def draw():   # In Pygame Zero, there's no main() and no functions called. It au
     screen.draw.filled_rect(BOX3, PURPLE)
     screen.draw.filled_rect(BOX4, PURPLE)
     screen.draw.filled_rect(Rect((0, 600), (600, 100)), PURPLE)
-    screen.draw.filled_rect(Rect((600, 0), (250, HEIGHT)), PURPLE)
-    ### print values
-#     screen.draw.text(str(distance), (610, 50), color="orange", fontsize=40) # top left to bottom right, ypos is inverted
-#     screen.draw.text(str(light), (610, 150), color="green", fontsize=40)
-#     screen.draw.text(str(xpos1), (610, 250), color="cyan", fontsize=40)
-#     screen.draw.text(str(ypos1), (700, 250), color="cyan", fontsize=40)
-#     screen.draw.text(str(edge_distance), (610, 350), color="red", fontsize=40)
-#     if (pressed == 1):
-#         screen.draw.text("yes (noice)", (610, 450), color="magenta", fontsize=40)
-#     elif (pressed == 0):
-#         screen.draw.text("no :(", (610, 450), color="magenta", fontsize=40)
-#     screen.draw.text("distance:", (610, 10), color="pink", fontsize=40) # top left to bottom right, ypos is inverted
-#     screen.draw.text("light proximity:", (610, 100), color="green", fontsize=40)
-#     screen.draw.text("x , y:", (610, 200), color="cyan", fontsize=40)
-#     screen.draw.text("pressed?", (610, 400), color="magenta", fontsize=40)
-#     screen.draw.text("edge distance", (610, 300), color="red", fontsize=40)
+    screen.draw.filled_rect(Rect((600, 0), (120, HEIGHT)), PURPLE)
+    ### print values, top left to bottom right, ypos is inverted
+    screen.draw.text(str(distance), (610, 50), color="orange", fontsize=40)
+    screen.draw.text(str(light), (610, 150), color="green", fontsize=40)
+    screen.draw.text(str(xpos1), (610, 250), color="cyan", fontsize=40)
+    screen.draw.text(str(ypos1), (700, 250), color="cyan", fontsize=40)
+    screen.draw.text(str(edge_distance), (610, 350), color="red", fontsize=40)
+    if (pressed == 1):
+        screen.draw.text("yes (noice)", (610, 450), color="magenta", fontsize=40)
+    elif (pressed == 0):
+        screen.draw.text("no :(", (610, 450), color="magenta", fontsize=40)
+    screen.draw.text("distance:", (610, 10), color="pink", fontsize=40)
+    screen.draw.text("light proximity:", (610, 100), color="green", fontsize=40)
+    screen.draw.text("x , y:", (610, 200), color="cyan", fontsize=40)
+    screen.draw.text("pressed?", (610, 400), color="magenta", fontsize=40)
+    screen.draw.text("edge distance", (610, 300), color="red", fontsize=40)
 
     ###
     bot.draw()
@@ -106,34 +106,31 @@ def update(dt):  # called first
     ### CALIBRATION CURVE FOR VIVE SENSOR
     bot_position_update()
     ###
-    while ser.in_waiting:  # ser. from serial library, =serial.available()
-        line = ser.read_until().strip() #strip() removes the \r\n
-        values = line.decode('ascii').split(' ')
-        #print(values)
-        if(values[0] == 'x'):
-            x[int(values[1])] = int(values[2])  # necessary for a sine wave
-            #print(x)
-        if(values[0] == 'a'):
-             distance = int(values[1])
-        if(values[0] == 'b'):
-             light = int(values[1])
-        if(values[0] == 'c'):
-             xpos1 = float(values[1])
-        if(values[0] == 'd'):
-             ypos1 = float(values[1])
-        if(values[0] == 'e'):
-             pressed = int(values[1])
-        if(values[0] == 'f'):
-             edge_distance = float(values[1])
+#     while ser.in_waiting:  # ser. from serial library, =serial.available()
+#         line = ser.read_until().strip() #strip() removes the \r\n
+#         values = line.decode('ascii').split(' ')
+#         print(values)
+#         if(values[0] == 'a'):
+#              distance = int(values[1])
+#         if(values[0] == 'b'):
+#              light = int(values[1])
+#         if(values[0] == 'c'):
+#              xpos1 = float(values[1])
+#         if(values[0] == 'd'):
+#              ypos1 = float(values[1])
+#         if(values[0] == 'e'):
+#              pressed = int(values[1])
+#         if(values[0] == 'f'):
+#              edge_distance = float(values[1])
 
-    if bot.left > WIDTH:
-        bot.right = 0
-    if bot.right < 0:
-        bot.left = WIDTH
-    if bot.top > HEIGHT:
-        bot.bottom = 0
-    if bot.bottom < 0:
-        bot.top = HEIGHT
+#     if bot.left > WIDTH:
+#         bot.right = 0
+#     if bot.right < 0:
+#         bot.left = WIDTH
+#     if bot.top > HEIGHT:
+#         bot.bottom = 0
+#     if bot.bottom < 0:
+#         bot.top = HEIGHT
 
 #     if keyboard.left:
 #         bot.x -= 3
@@ -165,12 +162,12 @@ def on_mouse_down(button, pos):
         bot.image = lynch_
     elif peshkin.collidepoint(pos):
         bot.image = peshkin_
-#     else:
-#         ser.write(b'w') # robot moves forward when mouse is clicked
+    else:
+        ser.write(b'w')
 
-def on_mouse_up(button, pos):
-    #print("Mouse button", button, "up at", pos)
-    ser.write(b'p') # robot is stationary when mouse is not clicked
+# def on_mouse_up(button, pos):
+#     print("Mouse button", button, "up at", pos)
+#     ser.write(b'p') ##robot is stationary when mouse is not clicked
 
 def on_key_down(key): #key names are saved in CAPS
     if key.name == 'X':
