@@ -12,7 +12,7 @@ BluetoothSerial SerialBT;
 
 int count = 0;
 
-//INITIALIZE WHEEL VARIABLES:
+//INITIALIZE DRIVE VARIABLES:
 
 const int PWMRpin = 14;
 const int DIRRpin = 32;
@@ -131,85 +131,79 @@ void loop() {
       }
       
       case 'w': {
-//        int rightdir = digitalRead(DIRRPIN);
-//        int leftdir = digitalRead(DIRLPIN);
-        if (isitmoving== 1 && digitalRead(right_read) == FWD && digitalRead(left_read) == FWD)
-        {;}
+        if (isitmoving== 1 && digitalRead(right_read) == FWD && digitalRead(left_read) == FWD) {;}
         else {
-        isitmoving = 1;
-        digitalWrite(DIRLpin, FWD);
-        digitalWrite(DIRRpin, FWD);  
-        int dutycycle=30;
-        for (dutycycle=30; dutycycle<250; dutycycle+=10) {
-        ledcWrite(PWMLchannel, dutycycle);
-        ledcWrite(PWMRchannel, dutycycle);
-        delay(50);
-      }
+          isitmoving = 1;
+          digitalWrite(DIRLpin, FWD);
+          digitalWrite(DIRRpin, FWD);  
+          int dutycycle=30;
+          for (dutycycle=30; dutycycle<250; dutycycle+=10) {
+            ledcWrite(PWMLchannel, dutycycle);
+            ledcWrite(PWMRchannel, dutycycle);
+            delay(50);
+          }
         }
-      break;
+        break;
       }
       case 's': {
-      isitmoving = 1;
-      ledcWrite(PWMLchannel, 140);
-      digitalWrite(DIRLpin, BACK);
-      ledcWrite(PWMRchannel, 140);
-      digitalWrite(DIRRpin, BACK); 
-      break;
+        isitmoving = 1;
+        ledcWrite(PWMLchannel, 140);
+        digitalWrite(DIRLpin, BACK);
+        ledcWrite(PWMRchannel, 140);
+        digitalWrite(DIRRpin, BACK); 
+        break;
       }
       case 'a': {
         isitmoving = 1;
-      ledcWrite(PWMLchannel, 170);
-      digitalWrite(DIRLpin, BACK);
-      ledcWrite(PWMRchannel, 170);
-      digitalWrite(DIRRpin, FWD);
-      break;
+        ledcWrite(PWMLchannel, 170);
+        digitalWrite(DIRLpin, BACK);
+        ledcWrite(PWMRchannel, 170);
+        digitalWrite(DIRRpin, FWD);
+        break;
       }
       case 'd': {
         isitmoving = 1;
-      ledcWrite(PWMLchannel, 170);
-      digitalWrite(DIRLpin, FWD);
-      ledcWrite(PWMRchannel, 170);
-      digitalWrite(DIRRpin, BACK);
-      break;
+        ledcWrite(PWMLchannel, 170);
+        digitalWrite(DIRLpin, FWD);
+        ledcWrite(PWMRchannel, 170);
+        digitalWrite(DIRRpin, BACK);
+        break;
       }
       case 'q': {
-      for(int posDegrees = 120; posDegrees >= 100; posDegrees--) 
-      {
-        servo1.write(posDegrees);
-        delay(5);
-      }
-      break;
+        for(int posDegrees = 120; posDegrees >= 100; posDegrees--) 
+        {
+          servo1.write(posDegrees);
+          delay(5);
+        }
+        break;
       }
       case 'e': {
-      for(int posDegrees = 100; posDegrees <= 120; posDegrees++) 
-      {
-        servo1.write(posDegrees);
-        delay(5);
-      }
-      break;
+        for(int posDegrees = 100; posDegrees <= 120; posDegrees++) 
+        {
+          servo1.write(posDegrees);
+          delay(5);
+        }
+        break;
       }
       case 'p': {// for STOP
-      ledcWrite(PWMLchannel, 0);
-      ledcWrite(PWMRchannel, 0); 
-      isitmoving = 0;
-      break;
+        ledcWrite(PWMLchannel, 0);
+        ledcWrite(PWMRchannel, 0); 
+        isitmoving = 0;
+        break;
       }
-      case 'n': // for mouse, original forward code
-      ledcWrite(PWMLchannel, 250);
-      digitalWrite(DIRLpin, FWD);
-      ledcWrite(PWMRchannel, 250);
-      digitalWrite(DIRRpin, FWD); 
-      isitmoving = 1;
+      case 'n': // for mouse, original no-increment forward code
+        ledcWrite(PWMLchannel, 250);
+        digitalWrite(DIRLpin, FWD);
+        ledcWrite(PWMRchannel, 250);
+        digitalWrite(DIRRpin, FWD); 
+        isitmoving = 1;
     }
   }
 
   // DIST SENSOR:
   int distance = sensor.read();
-//  int light = analogRead(light_input_pin);
   SerialBT.print("a ");
   SerialBT.println(distance);
-//  SerialBT.print("a ");  
-//  SerialBT.println(light);
   if (sensor.timeoutOccurred()) { Serial.print(" TIMEOUT"); }
 
   // VIVE:
@@ -220,7 +214,6 @@ void loop() {
 
   // LIGHT SENSOR:
   int light = analogRead(light_input_pin)-2500;
-//  Serial.print(light);
   SerialBT.print("b ");
   SerialBT.println(light);
   
