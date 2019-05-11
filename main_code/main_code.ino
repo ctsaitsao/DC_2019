@@ -12,13 +12,18 @@ BluetoothSerial SerialBT;
 
 int count = 0;
 
-//INITIALIZE WHEEL CHANNELS:
+//INITIALIZE WHEEL VARIABLES:
 
 const int PWMRpin = 14;
 const int DIRRpin = 32;
 
+int isitmoving = 0;
+
 const int PWMLpin = 27;
 const int DIRLpin = 33;
+
+const int right_read = 12;
+const int left_read = 4;
 
 static const int PWMRchannel = 2;
 static const int PWMLchannel = 3;
@@ -56,6 +61,9 @@ void setup() {
 
   pinMode(DIRRpin,OUTPUT); // set direction pin to output
   pinMode(DIRLpin,OUTPUT); // set direction pin to output
+
+   pinMode(right_read,INPUT); // set direction pin to output
+   pinMode(left_read,INPUT); // set direction pin to output
 
   ledcWrite(PWMRchannel,0); // pwm channel, speed 0-255
   digitalWrite(DIRRpin, LOW); // set direction to cw/ccw
@@ -121,14 +129,27 @@ void loop() {
       }
       break;
       }
+      
       case 'w': {
-      ledcWrite(PWMLchannel, 250);
-      digitalWrite(DIRLpin, FWD);
-      ledcWrite(PWMRchannel, 250);
-      digitalWrite(DIRRpin, FWD);  
+//        int rightdir = digitalRead(DIRRPIN);
+//        int leftdir = digitalRead(DIRLPIN);
+        if (isitmoving== 1 && digitalRead(right_read) == FWD && digitalRead(left_read) == FWD)
+        {;}
+        else {
+        isitmoving = 1;
+        digitalWrite(DIRLpin, FWD);
+        digitalWrite(DIRRpin, FWD);  
+        int dutycycle=30;
+        for (dutycycle=30; dutycycle<250; dutycycle+=10) {
+        ledcWrite(PWMLchannel, dutycycle);
+        ledcWrite(PWMRchannel, dutycycle);
+        delay(50);
+      }
+        }
       break;
       }
       case 's': {
+      isitmoving = 1;
       ledcWrite(PWMLchannel, 140);
       digitalWrite(DIRLpin, BACK);
       ledcWrite(PWMRchannel, 140);
@@ -136,6 +157,7 @@ void loop() {
       break;
       }
       case 'a': {
+        isitmoving = 1;
       ledcWrite(PWMLchannel, 170);
       digitalWrite(DIRLpin, BACK);
       ledcWrite(PWMRchannel, 170);
@@ -143,6 +165,7 @@ void loop() {
       break;
       }
       case 'd': {
+        isitmoving = 1;
       ledcWrite(PWMLchannel, 170);
       digitalWrite(DIRLpin, FWD);
       ledcWrite(PWMRchannel, 170);
@@ -150,7 +173,7 @@ void loop() {
       break;
       }
       case 'q': {
-      for(int posDegrees = 120; posDegrees >= 90; posDegrees--) 
+      for(int posDegrees = 120; posDegrees >= 100; posDegrees--) 
       {
         servo1.write(posDegrees);
         delay(5);
@@ -158,7 +181,7 @@ void loop() {
       break;
       }
       case 'e': {
-      for(int posDegrees = 90; posDegrees <= 120; posDegrees++) 
+      for(int posDegrees = 100; posDegrees <= 120; posDegrees++) 
       {
         servo1.write(posDegrees);
         delay(5);
@@ -168,14 +191,15 @@ void loop() {
       case 'p': {// for STOP
       ledcWrite(PWMLchannel, 0);
       ledcWrite(PWMRchannel, 0); 
+      isitmoving = 0;
       break;
       }
-//      case 'p': {
-//      int light = analogRead(light_input_pin);
-//      Serial.print(light);
-//      SerialBT.print("a ");
-//      SerialBT.println(light);
-//      }
+      case 'n': // for mouse, original forward code
+      ledcWrite(PWMLchannel, 250);
+      digitalWrite(DIRLpin, FWD);
+      ledcWrite(PWMRchannel, 250);
+      digitalWrite(DIRRpin, FWD); 
+      isitmoving = 1;
     }
   }
 
@@ -195,8 +219,8 @@ void loop() {
   Serial.println(ypos1);
 
   // LIGHT SENSOR:
-  int light = analogRead(light_input_pin);
-  Serial.print(light);
+  int light = analogRead(light_input_pin)-2500;
+//  Serial.print(light);
   SerialBT.print("b ");
   SerialBT.println(light);
   

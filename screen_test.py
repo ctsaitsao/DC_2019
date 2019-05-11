@@ -32,7 +32,6 @@ def draw():   # In Pygame Zero, there's no main() and no functions called. It au
     screen.draw.filled_rect(BOX3, PURPLE)
     screen.draw.filled_rect(BOX4, PURPLE)
     nick.draw()
-
     ###
 
     plot(x,10,HEIGHT/2,0,0,255) # data, xpos, ypos, red, green, blue
