@@ -63,7 +63,7 @@ To be able to locate the tokens, a laser and a phototransistor were used. A high
 
 To know if a block was caught, a touch sensor was attached to the brush. When a block was caught, it would push against a small cylinder which would in turn push on the touch sensor:
 
-![](media/touch_sensor.png)
+<img src="media/touch_sensor.jpg" width="350">
 
 An additional HC-SR04 ultrasonic distance sensor was connected to the block looking down to determine the distance between the robot and the ground (so that the robot wouldn’t fall off the platform out of bounds) but this drew too much current and made everything lag when connected to the Arduino.
 
