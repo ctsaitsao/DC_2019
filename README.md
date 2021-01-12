@@ -15,21 +15,21 @@ Design Competition (DC) is an annual competition hosted by Northwestern's McCorm
 
 Below is an image of the arena. Barriers must be placed in the purple squares and robots can be placed at any location. The arena also contains two HTC Vive Base Stations for robots to use to determine their locations in the arena.
 
-![](media/arena.png)
+<img src="media/arena.png" width="700">
 
 The tokens were wooden cubes covered with reflective tape. They contained a cylindrical hole through their vertical axis.
 
-![](media/token.jpeg)
+<img src="media/token.jpeg" width="300">
 
 ## Overall Strategy
 Take advantage of the holes in every token by using a cleaning brush to drag the block around. The brush would be attached to an arm that rotated up and down using a servo. The arm would also provide enough downward force to cause the block to move by friction between it and the brush hairs. Cut the hairs at an angle (mimicking a wedge) to increase the frictional force between them and the blocks.
 
-![](media/strategy.gif)
+<img src="media/strategy.gif" width="400">
 
 Sense the position of the robot in respect to the map (using a GPS-like feature) as well as the blocks' positions.
 
 ## Design
-![](media/robot.jpg)
+<img src="media/robot.jpg" width="700">
 
 ### Mechanical Design
 The body of the robot was made out of laser-cut acrylic. It was purely structural and designed to support breadboards and wiring, and was essentially two “shelves”. The body also consisted of an arm that held the weapon at the end. 
