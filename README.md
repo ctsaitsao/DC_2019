@@ -44,7 +44,7 @@ The main voltage source of the robot was a 12V battery, so a 3D-printed battery 
 Robot moved using a differential drive mechanism, commanded by the WASD keys on a computer and communicating with the computer using the bluetooth module of the microcontroller. It was not autonomous, and instead was driven by team members following the live-updated location and object detection information provided by the robot. Each direction (forward, backward, left, right) had two options: fast or slow. Fast was mostly for actual movement within the field, and slow was for scanning the field for tokens or obstacles, or when the robot was nearing the edge to drop an obstacle.
 
 ### Electronics
-![](media/sensors.jpg)
+<img src="media/sensors.jpg" width="700">
 
 #### Microcontroller
 An Adafruit ESP32 Feather Board was used to communicate with the sensors and motors. The Arduino IDE was used for programming (see `arduino_code` folder for all code).
