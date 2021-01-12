@@ -1,6 +1,4 @@
-% Written by Tiger Nie for the 2019 McCormick robotics competition
-% 
-% This script calculates and visualise the coefficients to a multiple 
+% This script calculates and visualises the coefficients to a multiple 
 % regression model for calibrating a sensor coordinate system to a known 
 % real coordinate system, where
 % real_x = bx(1) + bx(2)*sensor_x + bx(3)*sensor_y + bx(4)*sensor_x.*sensor_y;

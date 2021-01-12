@@ -1,6 +1,5 @@
 // this code uses the Vive sensors to calculate position (of two sensors)
 // and prints over Serial3 (TX3=pin 8, RX3 = pin 7)
-// NDM 5/9/19
 
 // for vive
 #include <math.h>
