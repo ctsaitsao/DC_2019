@@ -5,7 +5,7 @@ Course-wide project for DSGN 360: Design Competition, Northwestern University, S
 ## Introduction & Rules
 Design Competition (DC) is an annual competition hosted by Northwestern's McCormick School of Engineering during spring quarter. It consists of student teams building autonomous or semi-autonomous robots that complete a task. The official rules for the 2019 competition were:
 
-*"The arena is divided into two 6' x 6' squares, with a barrier between them to block the view of the driver. Teams place their robot in the opposing square, and their four tokens in their own square.*
+*"The arena is divided into two 6' x 6' squares, with a barrier between them to **block** the view of the driver. Teams place their robot in the opposing square, and their four tokens in their own square.*
 
 *The team that first removes all of their opponents tokens wins. If after 3 minutes neither team has removed all of the tokens, points are awarded for the tokens that have been removed: 4 points for the smallest down to 1 for the largest. The team with the most points wins. In the event of a tie, the round is run again. In the event of three ties, the winner is decided by coin toss.*
 
@@ -41,16 +41,16 @@ The robot had two wheels which spun in response to servos, and one wheel as a th
 The main voltage source of the robot was a 12V battery, so a 3D-printed battery holder was used to secure it.
 
 ### Locomotion
-Robot moved using a differential drive mechanism, commanded by the WASD keys on a computer and communicating with the computer using a bluetooth module. It was not autonomous, and instead was driven by team members following the live-updated location and object detection information provided by the robot. Each direction (forward, backward, left, right) had two options: fast or slow. Fast was mostly for actual movement within the field, and slow was for scanning the field for tokens or obstacles, or when the robot was nearing the edge to drop an obstacle.
+Robot moved using a differential drive mechanism, commanded by the WASD keys on a computer and communicating with the computer using the bluetooth module of the microcontroller. It was not autonomous, and instead was driven by team members following the live-updated location and object detection information provided by the robot. Each direction (forward, backward, left, right) had two options: fast or slow. Fast was mostly for actual movement within the field, and slow was for scanning the field for tokens or obstacles, or when the robot was nearing the edge to drop an obstacle.
 
 ### Electronics
-![](media/sensors.png)
+![](media/sensors.jpg)
 
 #### Microcontroller
-An Adafruit ESP32 Feather Board was used to communicate with the sensors and motors. The Arduino IDE was used for programming (see `arduino_code` folder for code).
+An Adafruit ESP32 Feather Board was used to communicate with the sensors and motors. The Arduino IDE was used for programming (see `arduino_code` folder for all code).
 
 #### Actuators
-Three motors were used — two N20 DC motors for the wheels and one servomotor for the weapon. They were controlled by the user by pressing different keys on the keyboard. They were connected to the ESP32 through an H-bridge. The weapon moved up and down approximately 40 degrees.
+Three motors were used — two N20 DC motors for the wheels and one servomotor for the weapon. They were controlled by the user by pressing different keys on the keyboard. They were connected to the ESP32 through MAX14870 H-bridges. The weapon moved up and down approximately 40 degrees.
 
 The motors on the wheels were fed PWM signals from the ESP32, and there were two speeds — fast and slow, where the fast speed had a duty cycle of approximately 70% and the slow speed had a duty cycle of approximately 30%. There was also a pin for direction that would make the wheel move forward or backward.
 
