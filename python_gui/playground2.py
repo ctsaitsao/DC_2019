@@ -1,6 +1,3 @@
-
-
-
 WIDTH = 600    # 6 feet
 HEIGHT = 600   # 6 feet
 TITLE = "TOTEM!"
