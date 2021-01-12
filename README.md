@@ -47,7 +47,7 @@ Robot moved using a differential drive mechanism, commanded by the WASD keys on 
 <img src="media/sensors.jpg" width="700">
 
 #### Microcontroller
-An Adafruit ESP32 Feather was used to communicate with the sensors and motors. The Arduino IDE was used for programming (see `arduino_code` folder for all code).
+An Adafruit ESP32 Feather was used to communicate with the sensors and motors. It transmitted sensor data using Bluetooth, and the computer received it using a USB Bluetooth adapter. The Arduino IDE was used for programming (see `arduino_code` folder for all code). 
 
 #### Actuators
 Three motors were used — two N20 DC motors for the wheels and one servomotor for the weapon. They were controlled by the user by pressing different keys on the keyboard. They were connected to the ESP32 through MAX14870 H-bridges. The weapon moved up and down approximately 40 degrees.
@@ -55,7 +55,7 @@ Three motors were used — two N20 DC motors for the wheels and one servomotor f
 The motors on the wheels were fed PWM signals from the ESP32, and there were two speeds — fast and slow, where the fast speed had a duty cycle of approximately 70% and the slow speed had a duty cycle of approximately 30%. There was also a pin for direction that would make the wheel move forward or backward.
 
 #### Sensors
-Two Triad TS3633 sensors were used to detect where the robot was on the map. These sensors were built to interface with HTC Vive Base Stations for 3D position tracking. Two sensors were used because calculating the robot’s direction required calculating the angle that the two sensors made with each other. The sensors were paired with a Teensy chip and transmitted data through Bluetooth.
+Two Triad TS3633 sensors were used to detect where the robot was on the map. These sensors were built to interface with HTC Vive Base Stations for 3D position tracking. Two sensors were used because calculating the robot’s direction required calculating the angle that the two sensors made with each other. The sensors were paired with a Teensy chip, which transmitted the data to the ESP32.
 
 A Pololu VL53L0X time-of-flight distance sensor was used to detect obstacles in front of a robot. It could sense up to 400 cm away.
 
@@ -71,6 +71,14 @@ An additional HC-SR04 ultrasonic distance sensor was connected to the block look
 A 12V battery was used to power the motors and a Pololu S10V4F5 5V step-up/step-down voltage regulator was used to bring down the voltage to 5V for the rest of the electronics.
 
 ### Python GUI & Coordinate Transformations
-coded in Python so we would get an image of the map and the position and orientation of the robot updated in real time.
+To command the robot and detect its position and sensor values, a Python GUI was implemented. As mentioned before, robot drivers were not allowed to see the arena during the competition so this GUI was a command center of sorts. 
+
+<img src="media/gui.PNG" width="500">
+
+As seen above, the GUI displayed all sensor information on the right and contained a map of the arena on the left. The position of the robot was indicated by one of the faces, which the user could change by simply clicking on them. The demo below shows the robot being rotated and its position on the GUI moving accordingly, as well as the sensor values being updated in real time:
+
+<img src="media/gui_demo.gif" width="800">
+
+Calibration
 
 ## Folder Descriptions
