@@ -13,7 +13,7 @@ Design Competition (DC) is an annual competition hosted by Northwestern's McCorm
 
 *Your robot must fit in a 10" cube at the beginning of the round. The robot may be remote controlled by a driver using Bluetooth-classic and a computer program. Data may be streamed in either direction. The robot can be fully autonomous, semi autonomous, or fully remote controlled."*
 
-Below is an image of the arena. Barriers must be placed in the purple squares and robots can be placed at any location.
+Below is an image of the arena. Barriers must be placed in the purple squares and robots can be placed at any location. The arena also contains two HTC Vive Base Stations for robots to use to determine their locations in the arena.
 
 ![](media/arena.png)
 
@@ -34,14 +34,37 @@ Sense the position of the robot in respect to the map (using a GPS-like feature)
 ### Mechanical Design
 The body of the robot was made out of laser-cut acrylic. It was purely structural and designed to support breadboards and wiring, and was essentially two “shelves”. The body also consisted of an arm that held the weapon at the end. 
 
-The weapon was a brush whose spokes would grab the token’s hole and drag the token out of the field. The brush was connected to a servo that would move the weapon down if there was a token to grab it, and up to release it or so that the brush itself would not drag on the floor. 
+The "weapon" was a brush whose spokes would grab the token’s hole and drag the token out of the field. The brush was connected to a servo that would move the weapon down if there was a token to grab it, and up to release it or so that the brush itself would not drag on the floor. 
 
 The robot had two wheels which spun in response to servos, and one wheel as a third point of contact to establish stability. The wheels each had a servo so that there would be differential drive, so moving forward and backward the wheels were spinning in the same direction, but to move left and right they would spin opposite each other. These wheels had an axis connecting them together and were part of the body. 
 
-The main voltage source of the robot was a 12V battery, a 3D-printed battery holder was used to secure it.
+The main voltage source of the robot was a 12V battery, so a 3D-printed battery holder was used to secure it.
 
 ### Locomotion
 Robot moved using a differential drive mechanism, commanded by the WASD keys on a computer and communicating with the computer using a bluetooth module. It was not autonomous, and instead was driven by team members following the live-updated location and object detection information provided by the robot. Each direction (forward, backward, left, right) had two options: fast or slow. Fast was mostly for actual movement within the field, and slow was for scanning the field for tokens or obstacles, or when the robot was nearing the edge to drop an obstacle.
 
 ### Electronics
-An ESP32 microcontroller was used to communicate with the sensors and motors.
+![](media/sensors.png)
+
+#### Microcontroller
+An Adafruit ESP32 Feather Board was used to communicate with the sensors and motors. The Arduino IDE was used for programming (see `arduino_code` folder for code).
+
+#### Actuators
+Three motors were used — two N20 DC motors for the wheels and one servomotor for the weapon. They were controlled by the user by pressing different keys on the keyboard. They were connected to the ESP32 through an H-bridge. The weapon moved up and down approximately 40 degrees.
+
+The motors on the wheels were fed PWM signals from the ESP32, and there were two speeds — fast and slow, where the fast speed had a duty cycle of approximately 70% and the slow speed had a duty cycle of approximately 30%. There was also a pin for direction that would make the wheel move forward or backward.
+
+#### Sensors
+Two Triad TS3633 sensors were used to detect where the robot was on the map. These sensors were built to interface with HTC Vive Base Stations for 3D position tracking. Two sensors were used because calculating the robot’s direction required calculating the angle that the two sensors made with each other. The sensors were paired with a Teensy chip and coded in Python so we would get an image of the map and the position and orientation of the robot updated in real time.
+
+For location, we also used a distance sensor that would sense obstacles. It was a Time of Flight sensor that would sense up to 400cm away, which was placed in front of the robot to see if we were going to run into an obstacle. 
+
+To be able to locate the tokens, we used a laser-phototransistor pair and a voltage sensor, where a high voltage would indicate a high current through a resistor, so we know that we were sensing the light reflected off of the reflective material in the tokens. This sensor was next to the light sensor which were coincident with the weapon so that every time they read something high we knew that there was a block precisely in front of the robot.
+
+To know if we caught a block, we attached a touch sensor to the brush that was pushed when the brush caught a block.
+
+We also tried to use an IR sensor that was connected to the block looking down to determine the distance between the bot and the ground (so that the bot wouldn’t fall out of bounds) but this drew too much current and made everything lag when connected to the arduino.
+
+### Python GUI
+
+## Folder Descriptions
