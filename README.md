@@ -87,7 +87,15 @@ The sensing system worked very well in the competition, but the robot was quite 
 
 Due to a majority of the teams lacking a working localization system, the "blind driving" requirement of the competition was removed mid-competition. This is when the robot's poor mobility became aparent.
 
-However, DC was a great learning experience and it was very rewarding to see the robot's sensing strengths in action. Future developments will include more drivetrain testing.
+Here is a demo of the faster robot movement before all of the sensors were implemented:
+
+<img src="media/fast_demo.gif" width="500">
+
+Here is a demo of the slower robot movement after all of the sensors were implemented:
+
+<img src="media/slow_demo.gif" width="500">
+
+Overall, DC was a great learning experience and it was very rewarding to see the robot's sensing strengths in action. Future developments will include more drivetrain testing.
 
 ## Folder Descriptions
 - `arduino_code`: code for the sensors and microcontroller of the robot.
