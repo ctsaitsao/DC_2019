@@ -71,7 +71,7 @@ An additional HC-SR04 ultrasonic distance sensor was connected to the block look
 A 12V battery was used to power the motors and a Pololu S10V4F5 5V step-up/step-down voltage regulator was used to bring down the voltage to 5V for the rest of the electronics.
 
 ### Python GUI & Coordinate Transformations
-To command the robot and detect its position and sensor values, a Python GUI was implemented. As mentioned before, robot drivers were not allowed to see the arena during the competition so this GUI was a command center of sorts. 
+To command the robot and detect its position and sensor values, a Python GUI was implemented. As mentioned before, robot drivers were not allowed to see the arena during the competition so this GUI was a command center of sorts. The GUI was programmed using the PyGame Zero mode of the Mu editor.
 
 <img src="media/gui.PNG" width="500">
 
@@ -79,6 +79,18 @@ As seen above, the GUI displayed all sensor information on the right and contain
 
 <img src="media/gui_demo.gif" width="800">
 
-Calibration
+#### Calibration
+The Vive sensor coordinate system needs to be calibrated with the real-life coordinate system. This was done by logging in sensor values at different known locations of the map before the competition started. These values were fed into the file `coordinate_transform.m`, which calculates the coefficients of a multiple regression model that describes the transform between the two coordinate systems. The transform is tested using the `vive_model.m` file, which outputs real-life coordinates. The same code from `vive_model.m` is used in `main.py`, the main Python GUI file.
+
+## Results and Learnings
+The sensing system worked very well in the competition, but the robot was quite difficult to drive, due to poor maneuverability and speed. The robot was simply too heavy to control effectively and the large amount of sensor data transmitted meant that there was significant lag when commanding robot movements. A larger emphasis on drivetrain testing prior to the competition would have been useful.
+
+Due to a majority of the teams lacking a working localization system, the "blind driving" requirement of the competition was removed mid-competition. This is when the robot's poor mobility became aparent.
+
+However, DC was a great learning experience and it was very rewarding to see the robot's sensing strengths in action. Future developments will include more drivetrain testing.
 
 ## Folder Descriptions
+- `arduino_code`: code for the sensors and microcontroller of the robot.
+- `matlab_code`: code for the calibration of the Vive sensor coordinate system and the real-life coordinate system.
+- `python_gui`: code for the Python GUI, or command center of the robot.
+- `sounds`: files for sounds that the robot made when performing tasks such as moving the weapon down and up.
